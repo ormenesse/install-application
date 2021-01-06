@@ -1,8 +1,10 @@
 # ubuntu
-FROM ubuntu:latest
+#FROM ubuntu:18.04
+FROM python:3.7.3-slim
 RUN apt-get update && apt-get -y install cron
-RUN apt -y install python3
-RUN apt -y install python3-pip
+RUN apt -y install apt-utils
+#RUN apt -y install python3
+#RUN apt -y install python3-pip
 # Copy hello-cron file to the cron.d directory
 COPY /app/cron /etc/cron.d/cron
 # Give execution rights on the cron job
@@ -10,8 +12,10 @@ RUN chmod 0644 /etc/cron.d/cron
 # Apply cron job
 RUN crontab /etc/cron.d/cron
 
+EXPOSE 80
+
 COPY . /app
 WORKDIR /app
 RUN pip3 install pandas numpy flask flask_cors dnspython pymongo holidays gunicorn
 
-ENTRYPOINT ["./app/gunicorn.sh"]
+ENTRYPOINT ["/app/app/gunicorn.sh"]
