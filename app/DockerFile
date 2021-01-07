@@ -21,4 +21,4 @@ COPY . /app
 WORKDIR /app
 RUN pip3 install pandas numpy flask flask_cors dnspython pymongo holidays gunicorn
 RUN chmod +x /app/app/gunicorn.sh
-ENTRYPOINT ["/app/app/gunicorn.sh"]
+ENTRYPOINT ["sh","/app/app/gunicorn.sh"]
