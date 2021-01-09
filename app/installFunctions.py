@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import datetime
 import holidays
-import calendar
+import calendarNew as calendar
 import copy
 
 def xirr(transactions):
@@ -89,18 +89,18 @@ def returnDaysEachMonth(period, rPaymentDate, rDisbursementDate):
 
                     day1 = date(rPaymentDate.year, rPaymentDate.month, rPaymentDate.day)
             
-                    year = calendar.nextmonth(day1.year,day1.month)[0]
+                    year = calendar._nextmonth(day1.year,day1.month)[0]
                         
-                    month = calendar.nextmonth(day1.year,day1.month)[1]
+                    month = calendar._nextmonth(day1.year,day1.month)[1]
             
                 else:
                     
                     try:
                         day1 = date(year, month, paymentDay)
                         
-                        year = calendar.nextmonth(day1.year,day1.month)[0]
+                        year = calendar._nextmonth(day1.year,day1.month)[0]
                         
-                        month = calendar.nextmonth(day1.year,day1.month)[1]
+                        month = calendar._nextmonth(day1.year,day1.month)[1]
                         
                     except:
                         
@@ -113,9 +113,9 @@ def returnDaysEachMonth(period, rPaymentDate, rDisbursementDate):
                             
                             day1 = date(day2.year, day2.month, day2.day) + datetime.timedelta(days=31)
                         
-                        year = calendar.nextmonth(day1.year,day1.month)[0]
+                        year = calendar._nextmonth(day1.year,day1.month)[0]
                         
-                        month = calendar.nextmonth(day1.year,day1.month)[1]
+                        month = calendar._nextmonth(day1.year,day1.month)[1]
                         
                 
                 days = ( day1 - day2 ).days
