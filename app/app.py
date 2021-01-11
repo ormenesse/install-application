@@ -17,8 +17,12 @@ CORS(app) #Prevents CORS errors
 @app.route('/')
 def works():
     return abort(400, 'Bad Request')
+    
+@app.route('/installapp')
+def works():
+    return abort(400, 'Bad Request')
 
-@app.route('/paymentCapacityPriceTable/', methods=['GET'])
+@app.route('/installapp/paymentCapacityPriceTable/', methods=['GET'])
 #/paymentCapacityPriceTable?paymentCapacity=1062.825282&riskGroup=3&Partner=GYRA&Fees=True&Iof=True
 def calculate_paymentCapacity():
     
@@ -26,7 +30,7 @@ def calculate_paymentCapacity():
     
     return paymentCapacityPriceTable(request)
     
-@app.route('/priceTable/', methods=['GET'])
+@app.route('/installapp/priceTable/', methods=['GET'])
 #/priceTable?preApproved=123123&Period=12&interestRate=3&Partner=GYRA&Fees=True&Iof=True
 def calculate_preapproved():
     
