@@ -14,6 +14,7 @@ warnings.filterwarnings("ignore")
 app = Flask(__name__)
 CORS(app) #Prevents CORS errors
 
+"""
 @app.route('/')
 def works():
     return abort(400, 'Bad Request')
@@ -21,6 +22,7 @@ def works():
 @app.route('/installapp')
 def works():
     return abort(400, 'Bad Request')
+"""
 
 @app.route('/installapp/paymentCapacityPriceTable/', methods=['GET'])
 #/paymentCapacityPriceTable?paymentCapacity=1062.825282&riskGroup=3&Partner=GYRA&Fees=True&Iof=True
