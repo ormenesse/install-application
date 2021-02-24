@@ -1,5 +1,5 @@
 #https://stackoverflow.com/questions/24892035/how-can-i-get-the-named-parameters-from-a-url-using-flask
-from flask import Flask, request, redirect, url_for, flash, jsonify, abort
+from flask import Flask, request, redirect, url_for, flash, jsonify, abort, Response
 from installFunctions import *
 from datetime import datetime
 from flask_cors import CORS
@@ -24,7 +24,12 @@ def works():
     return abort(400, 'Bad Request')
 """
 
-@app.route('/installapp/paymentCapacityPriceTable/', methods=['GET'])
+@app.route('/')
+def works():
+    status_code = flask.Response(status=200)
+	return status_code
+
+@app.route('/paymentCapacityPriceTable/', methods=['GET'])
 #/paymentCapacityPriceTable?paymentCapacity=1062.825282&riskGroup=3&Partner=GYRA&Fees=True&Iof=True
 def calculate_paymentCapacity():
     
@@ -32,7 +37,7 @@ def calculate_paymentCapacity():
     
     return paymentCapacityPriceTable(request)
     
-@app.route('/installapp/priceTable/', methods=['GET'])
+@app.route('/priceTable/', methods=['GET'])
 #/priceTable?preApproved=123123&Period=12&interestRate=3&Partner=GYRA&Fees=True&Iof=True
 def calculate_preapproved():
     
