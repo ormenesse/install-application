@@ -26,9 +26,8 @@ def works():
 
 @app.route('/')
 def works():
-    status_code = flask.Response(status=200)
-	return status_code
-
+	return ''
+    
 @app.route('/paymentCapacityPriceTable/', methods=['GET'])
 #/paymentCapacityPriceTable?paymentCapacity=1062.825282&riskGroup=3&Partner=GYRA&Fees=True&Iof=True
 def calculate_paymentCapacity():
