@@ -26,4 +26,6 @@ COPY gunicorn.conf /etc/supervisor/conf.d/gunicorn.conf
 COPY . /app
 RUN chmod 777 -R /app/app
 EXPOSE 80
+CMD cron
+CMD ["cd /app/app/install_csv && python3 updateCSV.py"]
 CMD ["/usr/bin/supervisord"]
