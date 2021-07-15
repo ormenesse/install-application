@@ -20,6 +20,7 @@ def works():
     
 @app.route('/installapp/paymentCapacityPriceTable/', methods=['GET'])
 #/paymentCapacityPriceTable?paymentCapacity=1062.825282&riskGroup=3&Partner=GYRA&Fees=True&Iof=True
+#/paymentCapacityPriceTable?paymentCapacity=1062.825282&interestRate=3&Partner=GYRA&Fees=True&Iof=True
 def calculate_paymentCapacity():
     
     gc.collect()

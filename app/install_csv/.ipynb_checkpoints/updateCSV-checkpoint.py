@@ -49,9 +49,13 @@ def main():
     for i in partners.iterrows():
         copy = dfNormalized.copy()
         copy.loc[:,'partnerFee'] = i[1]['partnerFee']
-        copy.loc[:,'type'] = i[1]['cnpj']
+        copy.loc[:,'type'] = i[1]['cnpj'] + ','
+        if ~np.isnan(i[1]['maxInterest']):
+            copy.loc[copy['interest'] > i[1]['maxInterest'], 'interest'] = i[1]['maxInterest']
+        if ~np.isnan(i[1]['minInterest']):
+            copy.loc[copy['interest'] < i[1]['minInterest'], 'interest'] = i[1]['minInterest']
         df = pd.concat([df,copy],axis=0)
-        
+
     cols = []
     for col in df.columns:
         if '.' in col:
@@ -59,6 +63,8 @@ def main():
         else:
             cols.append(col)
     df.columns = cols
+
+    df = df.groupby(['period','interest','riskGroup','gyraMaisFee','bankFee','partnerFee'],as_index=False).sum()
 
     df.to_csv('gyra_fees.csv',index=False)
 
