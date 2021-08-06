@@ -14,7 +14,7 @@ def main():
     allPartners = list(client['gyramais']['InterestFeesPartners'].aggregate([
         {
             '$match' : {
-                'document': 'PartnersGyra'
+                'document': 'PartnerGyra'
             }
         }
     ]))
@@ -35,7 +35,7 @@ def main():
     ]))
     client.close()
         
-    partners = pd.json_normalize(allPartners,'type')
+    partners = pd.json_normalize(allPartners)
 
     dfNormalized = pd.json_normalize(riskGroups,['groups','values'],[['groups','riskGroup']])
     

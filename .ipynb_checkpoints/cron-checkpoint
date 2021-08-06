@@ -1,1 +1,0 @@
-0 2 * * * cd /app/app/install_csv && python3 updateCSV.py
