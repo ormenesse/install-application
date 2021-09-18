@@ -216,7 +216,7 @@ def amortization_schedule(principal, interest_rate, period, rPaymentDate, rDisbu
         
     return installments
     
-def return_iof_fee( amounts_installs, amount, period, rPaymentDate, rDisbursementDate, iof_interest_rate=0.000041, iof_max_rate=0.015):
+def return_iof_fee( amounts_installs, amount, period, rPaymentDate, rDisbursementDate, iof_interest_rate=0.0000559, iof_max_rate=0.0204):
     
     days_each_month, installDates, _ = returnDaysEachMonth(period, rPaymentDate, rDisbursementDate)
     
@@ -233,6 +233,7 @@ def return_iof_fee( amounts_installs, amount, period, rPaymentDate, rDisbursemen
         
         total_iof.append(i*iof_interest_rate*days_iof)
     
+    # sempre perguntar se essa regra ainda existe
     iof_fee = sum(total_iof)+ amounts_installs.sum()*0.0038
     iof_fee_2 = amounts_installs.sum()*iof_max_rate
     iof_fee_2 = iof_fee_2 + amounts_installs.sum()*0.0038
