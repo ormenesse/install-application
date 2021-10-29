@@ -215,7 +215,8 @@ def amortization_schedule(principal, interest_rate, period, rPaymentDate, rDisbu
         number += 1
         
     return installments
-    
+
+# iof_interest_rate=0.000041, iof_max_rate=0.015
 def return_iof_fee( amounts_installs, amount, period, rPaymentDate, rDisbursementDate, iof_interest_rate=0.0000559, iof_max_rate=0.0204):
     
     days_each_month, installDates, _ = returnDaysEachMonth(period, rPaymentDate, rDisbursementDate)
@@ -256,8 +257,9 @@ def reverse_calculate_amortization_amount(paymentCapacity, interest_rate, period
         days_each_month.append(days)
     
     return paymentCapacity*sum(1/((1+interest_rate)**(np.array(days_each_month)/30)))
-    
-def reverse_return_iof_fee( amounts_installs, amount, period, rPaymentDate, rDisbursementDate, iof_interest_rate=0.000041, iof_max_rate=0.015):
+
+# iof_interest_rate=0.000041, iof_max_rate=0.015
+def reverse_return_iof_fee( amounts_installs, amount, period, rPaymentDate, rDisbursementDate, iof_interest_rate=0.0000559, iof_max_rate=0.0204):
     
     days_each_month, installDates, _ = returnDaysEachMonth(period, rPaymentDate, rDisbursementDate)
     
@@ -441,7 +443,9 @@ def paymentCapacityPriceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv
                 
                 preapr = preaprwfees/(1+(int_fees))
                 
-                preapr = np.round(preapr/100,0)*100
+                #preapr = np.round(preapr/100,0)*100
+                
+                preapr = np.ceil(preapr/5000)*5000
                 
                 feesValue = 0
                 
