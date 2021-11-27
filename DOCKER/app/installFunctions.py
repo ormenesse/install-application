@@ -57,7 +57,7 @@ def calculate_amortization_amount(principal, interest_rate, installDates, rDisbu
 
         soma = soma + ( 1/( (1+interest_rate)**( (days)/30.0) ) )
     
-    return principal/soma 
+    return round(principal/soma,6)
 
 def returnDaysEachMonth(period, rPaymentDate, rDisbursementDate):
     
@@ -165,7 +165,7 @@ def amortization_schedule_right(principal, interest_rate, period, rPaymentDate, 
         interest = balance * (np.power((1+interest_rate),(days_each_month[number-1]/30))-1) # quantidade de dias no mes
         principal = amortization_amount - interest
         balance = balance - principal
-        installments.append(dict(installDates=installDates[number-1],payDayDates=payDay[number-1],number=number, amortization_amount=amortization_amount, interest=interest, principal=principal, balance=balance if balance > 0.001 else 0))
+        installments.append(dict(installDates=installDates[number-1],payDayDates=payDay[number-1],number=number, amortization_amount=amortization_amount, interest=round(interest,6), principal=round(principal,6), balance=round(balance,6) if balance > 0.001 else 0))
         number += 1
         
     return installments
@@ -242,7 +242,7 @@ def return_iof_fee( amounts_installs, amount, period, rPaymentDate, rDisbursemen
     if iof_fee_2 < iof_fee:
         iof_fee = iof_fee_2
         
-    return iof_fee
+    return round(iof_fee,6)
     
 def reverse_calculate_amortization_amount(paymentCapacity, interest_rate, period, rPaymentDate, rDisbursementDate):
 
@@ -284,7 +284,7 @@ def reverse_return_iof_fee( amounts_installs, amount, period, rPaymentDate, rDis
     if iof_fee_2 < iof_fee:
         iof_fee = iof_fee_2
         
-    return iof_fee
+    return round(iof_fee,6)
     
 def calculate_amortization_schedule_with_taxes(amountWithFees, initial_amount, interest_rate, period=12, iof=True, adjusted=True, rPaymentDate=datetime.datetime.today(), rDisbursementDate=datetime.datetime.today()):
 
@@ -325,9 +325,9 @@ def calculate_amortization_schedule_with_taxes(amountWithFees, initial_amount, i
     
     # Norma BACEN
     
-    cet = ((annualCet+1)**(30/365))-1
+    cet = round(((annualCet+1)**(30/365))-1,6)
 
-    annualCet = ((1+cet)**12) - 1
+    annualCet = round(((1+cet)**12) - 1,6)
     
     return final_installments.to_dict(), cet, annualCet, iof_fee
     
@@ -380,7 +380,7 @@ def paymentCapacityPriceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv
             risk_group = 1
         
         try:
-            interest_rate = np.float(request.args.get('interestRate'))/100
+            interest_rate = round(float(request.args.get('interestRate'))/100,6)
             interestGiven = True
         except:
             interest_rate = None
@@ -408,7 +408,7 @@ def paymentCapacityPriceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv
             
             if interestGiven == False:
                 
-                interest_rate = np.float(gyra_fees['interest'][(gyra_fees['period'] == period) & (gyra_fees['type'].str.contains(partner)) & (gyra_fees['riskGroup'] == risk_group)].max())
+                interest_rate = round(float(gyra_fees['interest'][(gyra_fees['period'] == period) & (gyra_fees['type'].str.contains(partner)) & (gyra_fees['riskGroup'] == risk_group)].max()),6)
 
             preaprwfees = find_pre_approved_with_fees(paymentCapacity, interest_rate, period, rPaymentDate, rDisbursementDate)
             
@@ -469,7 +469,7 @@ def paymentCapacityPriceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv
                 
                 preaprwfees = preapr+iofval
                 
-                pre_approved['choices'].append(dict(months=int(period),preApproved=preapr,preApprovedWithFees=preaprwfees,interestRate=interest_rate,amortizationTable=table,annualCet=acet,Cet=cet,Iof=iofval,DisbursementDate=rDisbursementDate))
+                pre_approved['choices'].append(dict(months=int(period),preApproved=preapr,preApprovedWithFees=float(preaprwfees),interestRate=interest_rate,amortizationTable=table,annualCet=acet,Cet=cet,Iof=iofval,DisbursementDate=rDisbursementDate))
 
 
         pre_approved['partner'] = partner
@@ -495,7 +495,7 @@ def priceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv'):
         if preapr < 0:
             preapr = 0 
         
-        interest_rate = np.float(request.args.get('interestRate'))/100
+        interest_rate = round(float(request.args.get('interestRate'))/100,6)
         
         period = int(request.args.get('Period'))
         
@@ -548,14 +548,13 @@ def priceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv'):
             for key in detailed_fees.keys():
                 int_fees = int_fees + detailed_fees[key]
                 detailed_fees[key] = detailed_fees[key]*preapr
-                preaprwfees = preaprwfees + detailed_fees[key]
+                preaprwfees = preaprwfees + float(detailed_fees[key])
                 
             #preapr = np.round(preapr/100,0)*100
             
             table, cet, acet, iofval = calculate_amortization_schedule_with_taxes(preaprwfees, preapr, interest_rate, period, iof_fee, adjusted, rPaymentDate, rDisbursementDate)
             
             preaprwfees = preaprwfees + iofval
-            
             pre_approved['choices'].append(dict(months=int(period),preApproved=preapr,interestRate=interest_rate,preApprovedWithFees=preaprwfees,totalfeesRate=int_fees,separatedFees=detailed_fees,amortizationTable=table,annualCet=acet,Cet=cet,Iof=iofval,DisbursementDate=rDisbursementDate))
 
         else:
@@ -565,7 +564,7 @@ def priceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv'):
             table, cet, acet, iofval = calculate_amortization_schedule_with_taxes(preapr, preapr, interest_rate, period, iof_fee, adjusted, rPaymentDate, rDisbursementDate)
             
             preaprwfees = preapr + iofval
-            
+            print('%.4f' % preaprwfees)
             pre_approved['choices'].append(dict(months=int(period),preApproved=preapr,preApprovedWithFees=preaprwfees,interestRate=interest_rate,amortizationTable=table,annualCet=acet,Cet=cet,Iof=iofval,DisbursementDate=rDisbursementDate))
         
         #Ending
