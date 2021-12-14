@@ -1,4 +1,3 @@
-from typing import final
 from flask import jsonify
 from datetime import date
 import pandas as pd
