@@ -219,7 +219,8 @@ def amortization_schedule(principal, interest_rate, period, rPaymentDate, rDisbu
     return installments, amortization_amount
 
 # iof_interest_rate=0.000041, iof_max_rate=0.015
-def return_iof_fee( amounts_installs, amount, period, rPaymentDate, rDisbursementDate, iof_interest_rate=0.0000559, iof_max_rate=0.0204):
+#def return_iof_fee( amounts_installs, amount, period, rPaymentDate, rDisbursementDate, iof_interest_rate=0.0000559, iof_max_rate=0.0204):
+def return_iof_fee( amounts_installs, amount, period, rPaymentDate, rDisbursementDate, iof_interest_rate=0.000041, iof_max_rate=0.015):
     
     days_each_month, installDates, _ = returnDaysEachMonth(period, rPaymentDate, rDisbursementDate)
     
@@ -261,7 +262,8 @@ def reverse_calculate_amortization_amount(paymentCapacity, interest_rate, period
     return paymentCapacity*sum(1/((1+interest_rate)**(np.array(days_each_month)/30)))
 
 # iof_interest_rate=0.000041, iof_max_rate=0.015
-def reverse_return_iof_fee( amounts_installs, amount, period, rPaymentDate, rDisbursementDate, iof_interest_rate=0.0000559, iof_max_rate=0.0204):
+#def reverse_return_iof_fee( amounts_installs, amount, period, rPaymentDate, rDisbursementDate, iof_interest_rate=0.0000559, iof_max_rate=0.0204):
+def reverse_return_iof_fee( amounts_installs, amount, period, rPaymentDate, rDisbursementDate, iof_interest_rate=0.000041, iof_max_rate=0.015):
     
     days_each_month, installDates, _ = returnDaysEachMonth(period, rPaymentDate, rDisbursementDate)
     
@@ -362,7 +364,6 @@ def find_pre_approved_with_fees(paymentCapacity, interest_rate, period=12, rPaym
     
     return pre_appr_w_fees
     
-
 def paymentCapacityPriceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv'):
     
     gyra_fees = pd.read_csv(gyraFeesPath)
