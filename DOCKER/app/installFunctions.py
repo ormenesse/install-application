@@ -5,6 +5,7 @@ import numpy as np
 import datetime
 import holidays
 from pandas.core.frame import DataFrame
+from scipy.optimize import fsolve
 import calendarNew as calendar
 import copy
 import sys, os
@@ -43,8 +44,25 @@ def return_forward_months(anomes,qtd,actualmonth=True):
             mes = mes + 1
         meses.append(int(mes))
     return meses
+
+def interest_rate(tj,*data):
+    A,P,M = data
+    return A/30 - P*( (tj*(np.power(1+tj,M))) / ( np.power(1+tj,M) - 1) )
+
+def calculate_interest_rate(interest_rate, *data):
     
+    principal, amortization, installDates, rDisbursementDate = data
     
+    soma = 0
+
+    for i in installDates:
+
+        days = ( i - ( date(rDisbursementDate.year, rDisbursementDate.month, rDisbursementDate.day) ) ).days
+
+        soma = soma + ( 1/( (1+interest_rate)**( (days)/30.0) ) )
+    
+    return amortization - np.round(principal/soma,6)
+
 def calculate_amortization_amount(principal, interest_rate, installDates, rDisbursementDate):
     
     days_each_month = []
@@ -612,4 +630,34 @@ def priceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv'):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
+        return jsonify({'Error' : 'Not a valid request.'})
+
+def calculate_inverse_interest_amount(request):
+
+    try:
+
+        rPaymentDate = datetime.datetime.strptime(request.args.get('PaymentDate'), '%d-%m-%Y')
+            
+        D = datetime.datetime.strptime(request.args.get('DisbursementDate'), '%d-%m-%Y')
+
+        P = np.float(request.args.get('Principal'))
+        
+        A = np.float(request.args.get('Amortization'))
+
+        period = np.int(request.args.get('Period'))
+
+        _, I, _ = returnDaysEachMonth(period, rPaymentDate, D)
+
+        #A = amortization_amount
+        #P = principal
+        #I = installDates
+        #D = rDisbursementDate
+
+        i_initial_guess = 0.01
+        i_solution = fsolve(calculate_interest_rate, i_initial_guess,args=(P,A,I,D))
+
+        return { 'interestRate' : i_solution[0] }
+
+    except Exception as e:
+        print(e)
         return jsonify({'Error' : 'Not a valid request.'})

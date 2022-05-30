@@ -11,13 +11,39 @@ def generateClient():
 def main():
     
     client = generateClient()
-    allPartners = list(client['gyramais']['InterestFeesPartners'].aggregate([
+    #allPartners = list(client['gyramais']['InterestFeesPartners'].aggregate([
+    #    {
+    #        '$match' : {
+    #            'document': 'PartnerGyra'
+    #        }
+    #    }
+    #]))
+    #
+    allPartners = list(client['gyramais']['Business'].aggregate([
         {
             '$match' : {
-                'document': 'PartnerGyra'
+                'fee' : { '$exists' : True }
+            }
+        },
+        {
+            '$project' : {
+                'cnpj' : 1,
+                'partnerFee' : { '$multiply' : [ '$fee', 1/100 ] },
+                'collectionFee' : { '$multiply' : [ '$collectionFee', 1/100 ] }
             }
         }
     ]))
+    allPartners.append(
+        {
+            'cnpj' : 'GYRA',
+            'partnerFee' : 0,
+            'collectionFee' : 0
+        }
+    )
+    partners = pd.json_normalize(allPartners)
+    partners['maxInterest'] = np.nan
+    partners['minInterest'] = np.nan
+    #
     riskGroups = list(client['gyramais']['InterestFeesPartners'].aggregate([
         {
             '$match' : {
@@ -34,8 +60,6 @@ def main():
         }
     ]))
     client.close()
-        
-    partners = pd.json_normalize(allPartners)
 
     dfNormalized = pd.json_normalize(riskGroups,['groups','values'],[['groups','riskGroup']])
     

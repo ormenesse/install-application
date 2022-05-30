@@ -34,6 +34,14 @@ def calculate_preapproved():
     gc.collect()
     
     return priceTable(request)
- 
+
+@app.route('/installapp/interestAmount/', methods=['GET'])
+#/interestAmount?Principal=16800&Period=24&DisbursementDate=29-10-2020&PaymentDate=20-12-2020&Amortization=1350.50
+def calculate_interestrate():
+    
+    gc.collect()
+    
+    return calculate_inverse_interest_amount(request)
+    
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
