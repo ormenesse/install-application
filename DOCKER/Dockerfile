@@ -1,5 +1,10 @@
 # ubuntu
 FROM ubuntu:21.04
+
+ENV DEBIAN_FRONTEND noninteractive
+ENV TZ=America/Sao_Paulo
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 RUN apt-get update -y && apt-get -y install cron
 RUN apt -y install apt-utils
 RUN apt-get install -y python3 python3-pip python3-virtualenv nginx gunicorn3 supervisor
