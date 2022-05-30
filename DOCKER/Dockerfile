@@ -12,10 +12,7 @@ RUN apt -y install apt-utils
 RUN apt-get install -y python3 python3-pip python3-virtualenv nginx gunicorn3 supervisor
 
 #python libraries
-RUN pip3 install -r /app/requirements.txt
-RUN pip3 install dnspython
-RUN pip3 install itsdangerous==2.0.1
-RUN pip3 install holidays gunicorn
+RUN pip3 install -r /app/app/requirements.txt
 
 # Copy hello-cron file to the cron.d directory
 COPY cron /etc/cron.d/cron
