@@ -402,6 +402,12 @@ def paymentCapacityPriceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv
         fees = eval(request.args.get('Fees'))
         
         iof_fee = eval(request.args.get('Iof'))
+
+        try:
+            bankFeeRate = np.float(request.args.get('BankFeeRate'))
+            gyra_fees.loc[:,'bankFee'] = bankFeeRate
+        except:
+            pass
         
         try:
             risk_group = int(request.args.get('riskGroup'))
@@ -546,6 +552,12 @@ def priceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv'):
         iof_fee = eval(request.args.get('Iof'))
         
         partner = request.args.get('Partner')
+
+        try:
+            bankFeeRate = np.float(request.args.get('BankFeeRate'))
+            gyra_fees.loc[:,'bankFee'] = bankFeeRate
+        except:
+            pass
         
         try:
             adjusted = eval(request.args.get('Adjusted'))
