@@ -249,7 +249,6 @@ def return_iof_fee( amounts_installs, amount, period, rPaymentDate, rDisbursemen
         #days_iof = (installDates[j] - date(rDisbursementDate.year, rDisbursementDate.month, rDisbursementDate.day)).days
         
         days_iof = np.sum(days_each_month[:j+1])
-        
         #if days_iof > 365:
         #    days_iof = 365
         
@@ -425,6 +424,12 @@ def paymentCapacityPriceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv
             adjusted = eval(request.args.get('Adjusted'))
         except:
             adjusted = False
+
+        try:
+            # Arredondar o paymentCapacity
+            rounding = eval(request.args.get('Round'))
+        except:
+            rounding = True
         
         if any(partner in sub for sub in list(gyra_fees['type'].unique())) == False:
             
@@ -478,9 +483,10 @@ def paymentCapacityPriceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv
                 
                 preapr = preaprwfees/(1+(int_fees))
                 
-                #preapr = np.round(preapr/100,0)*100
-                
-                preapr = np.ceil(preapr/5000)*5000
+                if rounding:
+                    preapr = np.ceil(preapr/5000)*5000
+                else:
+                    preapr = np.round(preapr/100,0)*100
                 
                 feesValue = 0
                 
