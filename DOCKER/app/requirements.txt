@@ -1,7 +1,7 @@
 Flask_Cors==3.0.10
 Flask==2.1.0
 requests==2.24.0
-numpy == 1.20.3
+numpy
 itsdangerous==2.0.1
 holidays
 gunicorn
@@ -10,13 +10,13 @@ gunicorn
 # D:\MODELOS - MONGODB\INSTALL_APP\DOCKER\app\installFunctions.py: 3,7
 # D:\MODELOS - MONGODB\INSTALL_APP\DOCKER\app\install_csv\updateCSV.py: 1
 # D:\MODELOS - MONGODB\INSTALL_APP\DOCKER\app\install_csv\updateCSVDaemon.py: 1
-pandas == 1.3.4
+pandas
 # D:\MODELOS - MONGODB\INSTALL_APP\DOCKER\app\.ipynb_checkpoints\app-checkpoint.py: 8
 # D:\MODELOS - MONGODB\INSTALL_APP\DOCKER\app\Functions.py: 5
 # D:\MODELOS - MONGODB\INSTALL_APP\DOCKER\app\app.py: 8
 # D:\MODELOS - MONGODB\INSTALL_APP\DOCKER\app\install_csv\updateCSV.py: 4
 # D:\MODELOS - MONGODB\INSTALL_APP\DOCKER\app\install_csv\updateCSVDaemon.py: 4
 dnspython
-pymongo == 3.12.1S
+pymongo
 # D:\MODELOS - MONGODB\INSTALL_APP\DOCKER\app\installFunctions.py: 8
-scipy == 1.7.1
+scipy
