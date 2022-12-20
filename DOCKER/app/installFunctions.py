@@ -392,7 +392,7 @@ def paymentCapacityPriceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv
         
         rDisbursementDate = datetime.datetime.strptime(request.args.get('DisbursementDate'), '%d-%m-%Y')
         
-        paymentCapacity = np.float(request.args.get('paymentCapacity'))
+        paymentCapacity = float(request.args.get('paymentCapacity'))
         
         if paymentCapacity < 0:
             paymentCapacity = 0
@@ -404,7 +404,7 @@ def paymentCapacityPriceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv
         iof_fee = eval(request.args.get('Iof'))
 
         try:
-            bankFeeRate = np.float(request.args.get('BankFeeRate'))
+            bankFeeRate = float(request.args.get('BankFeeRate'))
             gyra_fees.loc[:,'bankFee'] = bankFeeRate
         except:
             pass
@@ -547,7 +547,7 @@ def priceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv'):
         
         rDisbursementDate = datetime.datetime.strptime(request.args.get('DisbursementDate'), '%d-%m-%Y')
         
-        preapr = np.float(request.args.get('preApproved'))
+        preapr = float(request.args.get('preApproved'))
         
         if preapr < 0:
             preapr = 0 
@@ -563,7 +563,7 @@ def priceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv'):
         partner = request.args.get('Partner')
 
         try:
-            bankFeeRate = np.float(request.args.get('BankFeeRate'))
+            bankFeeRate = float(request.args.get('BankFeeRate'))
             gyra_fees.loc[:,'bankFee'] = bankFeeRate
         except:
             pass
@@ -663,11 +663,11 @@ def calculate_inverse_interest_amount(request):
             
         D = datetime.datetime.strptime(request.args.get('DisbursementDate'), '%d-%m-%Y')
 
-        P = np.float(request.args.get('Principal'))
+        P = float(request.args.get('Principal'))
         
-        A = np.float(request.args.get('Amortization'))
+        A = float(request.args.get('Amortization'))
 
-        period = np.int(request.args.get('Period'))
+        period = int(request.args.get('Period'))
 
         _, I, _ = returnDaysEachMonth(period, rPaymentDate, D)
 
