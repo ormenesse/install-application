@@ -6,7 +6,7 @@ import base64
 
 def generateClient():
     
-    return pymongo.MongoClient(base64.b64decode('').decode(), ssl=True)
+    return pymongo.MongoClient(base64.b64decode("bW9uZ29kYitzcnY6Ly9haXJmbG93OmtBQ3cyTHR4Z0Z6ZVB0bkBneXJhbWFpcy1wcm9kdWN0aW9uLmxod3RiLm1vbmdvZGIubmV0L2d5cmFtYWlzP3JldHJ5V3JpdGVzPXRydWUmcmVhZFByZWZlcmVuY2U9c2Vjb25kYXJ5JnJlYWRQcmVmZXJlbmNlVGFncz1ub2RlVHlwZTpBTkFMWVRJQ1Mmdz1tYWpvcml0eQ==").decode(), ssl=True)
 
 def main():
     

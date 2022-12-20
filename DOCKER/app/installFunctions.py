@@ -9,6 +9,7 @@ from scipy.optimize import fsolve
 import calendarNew as calendar
 import copy
 import sys, os
+import logging 
 
 def xirr(transactions):
     years = [(ta[0] - transactions[0][0]).days / 365.0 for ta in transactions]
@@ -532,10 +533,12 @@ def paymentCapacityPriceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
+        logging.basicConfig(filename='app.log', filemode='w+', format='%(name)s - %(levelname)s - %(message)s')
+        logging.error(exc_type + ' ' + fname + ' ' +exc_tb.tb_lineno)
         return jsonify({'Error' : 'Not a valid request.'})
     
 def priceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv'):
-    
+
     gyra_fees = pd.read_csv(gyraFeesPath)
     
     try:
@@ -648,6 +651,8 @@ def priceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv'):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
+        logging.basicConfig(filename='app.log', filemode='w+', format='%(name)s - %(levelname)s - %(message)s')
+        logging.error(exc_type + ' ' + fname + ' ' +exc_tb.tb_lineno)
         return jsonify({'Error' : 'Not a valid request.'})
 
 def calculate_inverse_interest_amount(request):
