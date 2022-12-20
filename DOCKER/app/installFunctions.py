@@ -534,7 +534,7 @@ def paymentCapacityPriceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
         logging.basicConfig(filename='app.log', filemode='w+', format='%(name)s - %(levelname)s - %(message)s')
-        logging.error(exc_type + ' ' + fname + ' ' +exc_tb.tb_lineno)
+        logging.error(str(exc_type) + ' ' + str(fname) + ' ' + str(exc_tb.tb_lineno))
         return jsonify({'Error' : 'Not a valid request.'})
     
 def priceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv'):
@@ -652,7 +652,7 @@ def priceTable(request, gyraFeesPath='./install_csv/gyra_fees.csv'):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
         logging.basicConfig(filename='app.log', filemode='w+', format='%(name)s - %(levelname)s - %(message)s')
-        logging.error(exc_type + ' ' + fname + ' ' +exc_tb.tb_lineno)
+        logging.error(str(exc_type) + ' ' + str(fname) + ' ' + str(exc_tb.tb_lineno))
         return jsonify({'Error' : 'Not a valid request.'})
 
 def calculate_inverse_interest_amount(request):
