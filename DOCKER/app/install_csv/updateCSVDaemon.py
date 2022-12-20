@@ -18,13 +18,39 @@ def main():
     while True:
         
         client = generateClient()
-        allPartners = list(client['gyramais']['InterestFeesPartners'].aggregate([
+        #allPartners = list(client['gyramais']['InterestFeesPartners'].aggregate([
+        #    {
+        #        '$match' : {
+        #            'document': 'PartnerGyra'
+        #        }
+        #    }
+        #]))
+        #
+        allPartners = list(client['gyramais']['Business'].aggregate([
             {
                 '$match' : {
-                    'document': 'PartnerGyra'
+                    'fee' : { '$exists' : True }
+                }
+            },
+            {
+                '$project' : {
+                    'cnpj' : 1,
+                    'partnerFee' : { '$multiply' : [ '$fee', 1/100 ] },
+                    'collectionFee' : { '$multiply' : [ '$collectionFee', 1/100 ] }
                 }
             }
         ]))
+        allPartners.append(
+            {
+                'cnpj' : 'GYRA',
+                'partnerFee' : 0,
+                'collectionFee' : 0
+            }
+        )
+        partners = pd.json_normalize(allPartners)
+        partners['maxInterest'] = np.nan
+        partners['minInterest'] = np.nan
+        #
         riskGroups = list(client['gyramais']['InterestFeesPartners'].aggregate([
             {
                 '$match' : {
@@ -42,12 +68,10 @@ def main():
         ]))
         client.close()
 
-        partners = pd.json_normalize(allPartners)
-
         dfNormalized = pd.json_normalize(riskGroups,['groups','values'],[['groups','riskGroup']])
-
+        
         fees = pd.json_normalize(allFees,'fees')
-
+        
         for period in fees['period'].unique():
             dfNormalized.loc[dfNormalized['period'] == period,'gyraMaisFee'] = fees['gyraMaisFee'][(fees['period'] == period)].values[0]
             dfNormalized.loc[dfNormalized['period'] == period,'bankFee'] = fees['bankFee'][(fees['period'] == period)].values[0]
@@ -70,9 +94,9 @@ def main():
             else:
                 cols.append(col)
         df.columns = cols
-        
+
         df = df.groupby(['period','interest','riskGroup','gyraMaisFee','bankFee','partnerFee'],as_index=False).sum()
-        
+
         df.to_csv('gyra_fees.csv',index=False)
         
         time.sleep(43200)
