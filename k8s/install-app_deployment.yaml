@@ -30,7 +30,7 @@ spec:
         app: install-app
     spec:
       containers:
-      - image: gcr.io/gyra-1558028521907/install-app:v8.5.3
+      - image: 941961614774.dkr.ecr.us-west-2.amazonaws.com/install-app:latest
         imagePullPolicy: IfNotPresent
         name: install-app
         resources: {}
