@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: install-service
+  namespace: default
+  labels:
+    app: install-app
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: alb
+    alb.ingress.kubernetes.io/healthcheck-path: /healthz
+spec:
+  type: ClusterIP
+  selector:
+    app: install-app
+    component: deployment
+  ports:
+    - protocol: TCP
+      #name:
+      port: 80
+      targetPort: 80

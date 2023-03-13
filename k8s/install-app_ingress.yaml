@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: data-science
+  name: install-app-ingress
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/group.name: gyramais
+    alb.ingress.kubernetes.io/load-balancer-name: gyramais-alb
+spec:
+  ingressClassName: alb
+  rules:
+    - host: install-app.hmg.gyramais.com.br
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: install-app-internal-service
+              port:
+                number: 80
