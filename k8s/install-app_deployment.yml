@@ -1,14 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    deployment.kubernetes.io/revision: "14"
-  creationTimestamp: "2021-10-29T17:56:17Z"
   generation: 20
   labels:
     app: install-app
   name: install-app
-  namespace: default
+  namespace: data-science
   resourceVersion: "440727366"
   uid: a56d8cdd-ca5e-4e41-945a-42dbe03a2bea
 spec:
@@ -25,12 +22,11 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: install-app
     spec:
       containers:
-      - image: gcr.io/gyra-1558028521907/install-app:v8.5.3
+      - image: 941961614774.dkr.ecr.us-west-2.amazonaws.com/install-app:latest
         imagePullPolicy: IfNotPresent
         name: install-app
         resources: {}
@@ -43,19 +39,6 @@ spec:
       terminationGracePeriodSeconds: 30
 status:
   availableReplicas: 5
-  conditions:
-  - lastTransitionTime: "2021-10-29T17:56:17Z"
-    lastUpdateTime: "2022-12-20T19:31:12Z"
-    message: ReplicaSet "install-app-858b779cf6" has successfully progressed.
-    reason: NewReplicaSetAvailable
-    status: "True"
-    type: Progressing
-  - lastTransitionTime: "2022-12-23T19:26:43Z"
-    lastUpdateTime: "2022-12-23T19:26:43Z"
-    message: Deployment has minimum availability.
-    reason: MinimumReplicasAvailable
-    status: "True"
-    type: Available
   observedGeneration: 20
   readyReplicas: 5
   replicas: 5

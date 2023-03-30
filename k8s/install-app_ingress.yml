@@ -8,6 +8,9 @@ metadata:
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/group.name: gyramais
     alb.ingress.kubernetes.io/load-balancer-name: gyramais-alb
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:941961614774:certificate/e6d1e700-6adc-4e56-a67f-2a9e913ddeb5
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
 spec:
   ingressClassName: alb
   rules:
