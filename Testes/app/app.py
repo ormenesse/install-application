@@ -24,16 +24,24 @@ def works():
 def calculate_paymentCapacity():
     
     gc.collect()
-    
-    return paymentCapacityPriceTable(request)
+    co = CreditOperation()
+    return co.paymentCapacityPriceTable(request)
     
 @app.route('/installapp/priceTable/', methods=['GET'])
 #/priceTable?preApproved=123123&Period=12&interestRate=3&Partner=GYRA&Fees=True&Iof=True
 def calculate_preapproved():
     
     gc.collect()
+    co = CreditOperation()
+    return co.priceTable(request)
+
+@app.route('/installapp/interestAmount/', methods=['GET'])
+#/interestAmount?Principal=16800&Period=24&DisbursementDate=29-10-2020&PaymentDate=20-12-2020&Amortization=1350.50
+def calculate_interestrate():
     
-    return priceTable(request)
- 
+    gc.collect()
+    co = CreditOperation()
+    return co.calculate_inverse_interest_amount(request)
+    
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

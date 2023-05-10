@@ -3,10 +3,16 @@ import numpy as np
 import datetime
 import pymongo
 import base64
+import os
 
-def generateClient():
-    
-    return pymongo.MongoClient(base64.b64decode("bW9uZ29kYitzcnY6Ly9haXJmbG93OmtBQ3cyTHR4Z0Z6ZVB0bkBneXJhbWFpcy1wcm9kdWN0aW9uLmxod3RiLm1vbmdvZGIubmV0L2d5cmFtYWlzP3JldHJ5V3JpdGVzPXRydWUmcmVhZFByZWZlcmVuY2U9c2Vjb25kYXJ5JnJlYWRQcmVmZXJlbmNlVGFncz1ub2RlVHlwZTpBTkFMWVRJQ1Mmdz1tYWpvcml0eQ==").decode(), ssl=True)
+def generateClient(section='mongodbRead'):
+
+    if section == 'mongodb':
+        return pymongo.MongoClient(base64.b64decode(os.getenv('mongodb', default=None)).decode(), ssl=True)
+    elif section == 'mongodbRead':
+        return pymongo.MongoClient(base64.b64decode(os.getenv('mongodbRead', default=None)).decode(), ssl=True)
+    else:
+        raise Exception("MongoDB env not found.")
 
 def main():
     

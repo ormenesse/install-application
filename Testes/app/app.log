@@ -1,0 +1,2 @@
+root - ERROR - <class 'AttributeError'> installFunctions.py 483
+werkzeug - INFO - 127.0.0.1 - - [10/May/2023 13:43:05] "GET /installapp/paymentCapacityPriceTable/?paymentCapacity=4112.86&riskGroup=5&Partner=18552346000168&Fees=True&Iof=True&PaymentDate=05-01-2022&DisbursementDate=12-11-2021&interestRate=1.9900000000000002 HTTP/1.1" 200 -

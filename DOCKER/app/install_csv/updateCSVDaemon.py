@@ -9,10 +9,15 @@ import pymongo
 import base64
 import time
 
-def generateClient():
-    
-    return pymongo.MongoClient(base64.b64decode('bW9uZ29kYitzcnY6Ly9yZWFkb25seXVzZXI6bTRMYXJuQTdGUzhxME9KY0BneXJhbWFpcy1wcm9kdWN0aW9uLmxod3RiLm1vbmdvZGIubmV0L3Rlc3Q/cmV0cnlXcml0ZXM9dHJ1ZSZyZWFkUHJlZmVyZW5jZT1zZWNvbmRhcnkmcmVhZFByZWZlcmVuY2VUYWdzPW5vZGVUeXBlOkFOQUxZVElDUyZ3PW1ham9yaXR5').decode(), ssl=True)
+def generateClient(section='mongodbRead'):
 
+    if section == 'mongodb':
+        return pymongo.MongoClient(base64.b64decode(os.getenv('mongodb', default=None)).decode(), ssl=True)
+    elif section == 'mongodbRead':
+        return pymongo.MongoClient(base64.b64decode(os.getenv('mongodbRead', default=None)).decode(), ssl=True)
+    else:
+        raise Exception("MongoDB env not found.")
+    
 def main():
     
     while True:
