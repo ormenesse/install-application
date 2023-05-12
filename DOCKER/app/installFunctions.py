@@ -352,11 +352,11 @@ class CreditOperation():
         array_irr = [ (i[1], i[0]) for i in final_installments[['amortization_amount','installDates']].values ]
         addDay = datetime.date(rDisbursementDate.year, rDisbursementDate.month, rDisbursementDate.day)
         array_irr.insert(0,(datetime.date(addDay.year, addDay.month, addDay.day),-initial_amount))
-        annualCet = np.round(self.xirr(array_irr),self.roundingPlaces)
+        annualCet = np.round(self.xirr(array_irr),6)
         cet = ((annualCet+1)**(1/12))-1
         # Norma BACEN
-        cet = round(((annualCet+1)**(30/365))-1,self.roundingPlaces)
-        annualCet = round(((1+cet)**12) - 1,self.roundingPlaces)
+        cet = round(((annualCet+1)**(30/365))-1,6)
+        annualCet = round(((1+cet)**12) - 1,6)
         
         return final_installments.to_dict(), cet, annualCet, iof_fee, installAmount
         
