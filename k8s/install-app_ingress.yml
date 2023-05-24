@@ -21,6 +21,6 @@ spec:
           pathType: Prefix
           backend:
             service:
-              name: install-app-internal-service
+              name: install-app-service
               port:
                 number: 80
