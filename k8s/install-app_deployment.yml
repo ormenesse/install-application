@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: install-app
+  namespace: data-science
+spec:
+  selector:
+    matchLabels:
+      app: install-app
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        app: install-app
+    spec:
+      containers:
+      - image: 881379168558.dkr.ecr.us-west-2.amazonaws.com/install-app:latest
+        name: install-app
+        resources: {}
+        ports:
+          - containerPort: 80

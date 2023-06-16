@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: data-science
+  name: install-app-ingress
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/group.name: gyramais
+    alb.ingress.kubernetes.io/load-balancer-name: gyramais-alb
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:881379168558:certificate/10a6a42f-bdff-4dbf-91cc-89e68eb75b3d
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+spec:
+  ingressClassName: alb
+  rules:
+    - host: install-app-prod.gyramais.com.br
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: install-app-service
+              port:
+                number: 80
