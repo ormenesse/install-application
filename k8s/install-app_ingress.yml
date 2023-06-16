@@ -14,7 +14,7 @@ metadata:
 spec:
   ingressClassName: alb
   rules:
-    - host: install-app-prod.gyramais.com.br
+    - host: install-app-prod.hmg.gyramais.com.br
       http:
         paths:
         - path: /
