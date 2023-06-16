@@ -13,8 +13,14 @@ spec:
       labels:
         app: install-app
     spec:
+      terminationGracePeriodSeconds: 70
       containers:
       - image: 881379168558.dkr.ecr.us-west-2.amazonaws.com/install-app:latest
+        imagePullPolicy: Always
+        lifecycle:
+              preStop:
+                exec:
+                  command: ["sleep","40"]
         name: install-app
         resources: {}
         ports:
