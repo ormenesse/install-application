@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: install-app
+    labels:
+      app : install-app
+spec:
+  selector:
+    matchLabels:
+      app: install-app
+  template:
+    metadata:
+      labels:
+        app: install-app
+    spec:
+      containers:
+      - image: {containerPath}/install-app:latest
+        imagePullPolicy: Always
+        name: install-app
+        envFrom:
+          - secretRef:
+              name: ds-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: install-service
+  namespace: default
+  labels:
+    app:  install-app
+spec:
+  type: ClusterIP
+  selector:
+    app:  install-app
+  ports:
+  - protocol: TCP
+    #name: 
+    port: 80
+    targetPort: 80
