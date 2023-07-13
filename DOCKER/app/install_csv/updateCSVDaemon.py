@@ -8,6 +8,7 @@ import datetime
 import pymongo
 import base64
 import time
+import os
 
 def generateClient(section='mongodbRead'):
 
