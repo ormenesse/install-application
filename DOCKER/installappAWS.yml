@@ -19,11 +19,11 @@ spec:
         name: install-app
         resources:
           limits:
-            cpu: "300m"
-            memory: "512Mi"
+            cpu: 300m
+            memory: 512Mi
           requests:
-            cpu: "100m"
-            memory: "128Mi"
+            cpu: 100m
+            memory: 128Mi
         name: install-app
         envFrom:
           - secretRef:
