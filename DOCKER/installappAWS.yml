@@ -14,6 +14,7 @@ spec:
         app: install-app
     spec:
       containers:
+      restartPolicy: Always
       - image: {containerPath}/install-app:latest
         imagePullPolicy: Always
         name: install-app
