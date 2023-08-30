@@ -208,6 +208,7 @@ class CreditOperation():
         
         days_each_month, installDates, payDay = self.returnDaysEachMonth(period, rPaymentDate, rDisbursementDate)
         amortization_amount = self.calculate_amortization_amount(principal, interest_rate, installDates, rDisbursementDate)
+        print(principal)
         number = 1
         balance = 1*principal
         balanceAdjusted = 1*principal
@@ -217,6 +218,7 @@ class CreditOperation():
         while number <= period:
             # não sou a favor disso, mas aparentemente não é a matemática que está valendo neste negócio.
             interest = ( balance * (np.power((1+interest_rate),(days_each_month[number-1]/30))-1) ) # quantidade de dias no mes
+            
             interestAdjusted = interest + interestBiggerThanPrincipal# quantidade de dias no mes
             interestBiggerThanPrincipal = 0
             if interest > amortization_amount:
@@ -330,10 +332,11 @@ class CreditOperation():
 
         installments = pd.DataFrame(installments)
         #print(installments.to_dict(orient='records'))
-        iof_fee = self.return_iof_fee( installments, period, rPaymentDate, rDisbursementDate, iofadjust)
-        
         if iof == False:
             iof_fee = 0
+        else:
+            iof_fee = self.return_iof_fee( installments, period, rPaymentDate, rDisbursementDate, iofadjust)
+        
         if adjusted:
             final_installments, installAmount = self.amortization_schedule(amount+iof_fee, interest_rate, period, rPaymentDate, rDisbursementDate)
             final_installments = pd.DataFrame(final_installments)
@@ -341,7 +344,7 @@ class CreditOperation():
             final_installments, installAmount = self.amortization_schedule_right(amount+iof_fee, interest_rate, period, rPaymentDate, rDisbursementDate)
             final_installments = pd.DataFrame(final_installments)
         # recalculando IOF            
-        iof_fee = self.return_iof_fee( final_installments, period, rPaymentDate, rDisbursementDate, iofadjust)
+        #iof_fee = self.return_iof_fee( final_installments, period, rPaymentDate, rDisbursementDate, iofadjust)
         """
         array_irr = list(final_installments['amortization_amount'].values)
         array_irr.insert(0,-initial_amount)
