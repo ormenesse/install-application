@@ -20,10 +20,10 @@ spec:
         resources:
           limits:
             cpu: 300m
-            memory: 512Mi
+            memory: 256Mi
           requests:
-            cpu: 100m
-            memory: 128Mi
+            cpu: 50m
+            memory: 96Mi
         name: install-app
         envFrom:
           - secretRef:
@@ -39,7 +39,7 @@ spec:
     kind: Deployment
     name: install-app
   minReplicas: 1
-  maxReplicas: 3
+  maxReplicas: 5
   behavior:
     scaleUp:
       stabilizationWindowSeconds: 30
