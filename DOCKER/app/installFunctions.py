@@ -116,38 +116,26 @@ class CreditOperation():
                         # First install must be different
         
                         day2 = date(rDisbursementDate.year, rDisbursementDate.month, rDisbursementDate.day)
-
-                        day1 = date(rPaymentDate.year, rPaymentDate.month, rPaymentDate.day)
-                
-                        year = calendar._nextmonth(day1.year,day1.month)[0]
-                            
+                        day1 = date(rPaymentDate.year, rPaymentDate.month, rPaymentDate.day) 
+                        year = calendar._nextmonth(day1.year,day1.month)[0]                          
                         month = calendar._nextmonth(day1.year,day1.month)[1]
                 
                     else:
                         
                         try:
                             day1 = date(year, month, paymentDay)
-                            
-                            year = calendar._nextmonth(day1.year,day1.month)[0]
-                            
+                            year = calendar._nextmonth(day1.year,day1.month)[0]                          
                             month = calendar._nextmonth(day1.year,day1.month)[1]
                             
                         except:
-                            
                             day1 = date( year, month , paymentDay - add) + datetime.timedelta(days=1)
-                            
-                            if ( day1 - day2 ).days < 31:
-                                
+                            if ( day1 - day2 ).days < 31:                             
                                 #getting last day of month
                                 lastday = calendar.monthrange(day2.year, day2.month)[1]
-                                
                                 day1 = date(day2.year, day2.month, day2.day) + datetime.timedelta(days=31)
-                            
                             year = calendar._nextmonth(day1.year,day1.month)[0]
-                            
                             month = calendar._nextmonth(day1.year,day1.month)[1]
                             
-                    
                     days = ( day1 - day2 ).days
                     days_each_month.append(days)
                     installInterestDate.append(day1)
@@ -156,18 +144,14 @@ class CreditOperation():
                     PayDay = copy.deepcopy(day1)
                     # verificando se o dia não é feriado ou dia da semana
                     while (PayDay.weekday() > 4) or (PayDay in vecHolidays):
-                    
                         if PayDay.weekday() > 4:
                             PayDay = PayDay + datetime.timedelta(days=(7-day1.weekday()))
-
                         if PayDay in vecHolidays:
                             PayDay = PayDay + datetime.timedelta(days=1)
                     
                     installDates.append(PayDay)
-                    
                     #fixing the new payment date
                     paymentDay = day1.day
-                    
                     loop = False
                 except:
                     add = add + 1
@@ -219,15 +203,20 @@ class CreditOperation():
             # não sou a favor disso, mas aparentemente não é a matemática que está valendo neste negócio.
             interest = ( balance * (np.power((1+interest_rate),(days_each_month[number-1]/30))-1) ) # quantidade de dias no mes
             
-            interestAdjusted = interest + interestBiggerThanPrincipal# quantidade de dias no mes
-            interestBiggerThanPrincipal = 0
+            if interestBiggerThanPrincipal > 0:
+                interest = interest + interestBiggerThanPrincipal
+                interestBiggerThanPrincipal = 0
+
             if interest > amortization_amount:
                 interestBiggerThanPrincipal = (interest - amortization_amount)
-                interestAdjusted = amortization_amount*1.0
-            
+                interest = amortization_amount*1.0
+
+            if number == period and interestBiggerThanPrincipal > 0:
+                interest = interest + interestBiggerThanPrincipal
+
             # Caso queira voltar a conta correta, deve-se apenas tirar esse if e deletar a variável interestBiggerThanPrincipal
             principal = amortization_amount - interest
-            principalAdjusted = amortization_amount - interestAdjusted
+            principalAdjusted = amortization_amount - interest
             balance = balance - principal
             balanceAdjusted = balance - principalAdjusted
             installments.append(
@@ -236,7 +225,7 @@ class CreditOperation():
                     payDayDates=payDay[number-1],
                     number=number,
                     amortization_amount=round(amortization_amount,self.roundingPlaces),
-                    interest=round(interestAdjusted,self.roundingPlaces),
+                    interest=round(interest,self.roundingPlaces),
                     principal=round(principalAdjusted,self.roundingPlaces),
                     balance=round(balanceAdjusted,self.roundingPlaces) if balanceAdjusted > 0.001 else 0
                 )
@@ -248,25 +237,19 @@ class CreditOperation():
     def return_iof_fee(self, amounts_installs, period, rPaymentDate, rDisbursementDate, iofadjust):
         
         days_each_month, installDates, _ = self.returnDaysEachMonth(period, rPaymentDate, rDisbursementDate)
-        
         if iofadjust == False:
             total_iof = []
             for j,i in enumerate(amounts_installs['amortization_amount']):
                 days_iof = np.sum(days_each_month[:j+1])
                 total_iof.append(i*self.iof_interest_rate*days_iof)
-
             # sempre perguntar se essa regra ainda existe
             iof_fee = sum(total_iof)+ amounts_installs['amortization_amount'].sum()*self.iof_adicional
             iof_fee_2 = amounts_installs['amortization_amount'].sum()*self.iof_max_rate
             iof_fee_2 = iof_fee_2 + amounts_installs['amortization_amount'].sum()*self.iof_adicional
-            
             if iof_fee_2 < iof_fee:
                 iof_fee = iof_fee_2
-            
             return round(iof_fee,self.roundingPlaces)
-        
         else:
-
             accInterest = amounts_installs['amortization_amount']-amounts_installs['interest']
             iofs = []
             for i in range(len(days_each_month)):
@@ -279,14 +262,10 @@ class CreditOperation():
 
     def reverse_calculate_amortization_amount(self, paymentCapacity, interest_rate, period, rPaymentDate, rDisbursementDate):
 
-        days_each_month, installDates, _ = self.returnDaysEachMonth(period, rPaymentDate, rDisbursementDate)
-        
+        days_each_month, installDates, _ = self.returnDaysEachMonth(period, rPaymentDate, rDisbursementDate)     
         days_each_month = []
-        
         for i in installDates:
-            
             days = ( i - (date(rDisbursementDate.year, rDisbursementDate.month, rDisbursementDate.day))).days
-            
             days_each_month.append(days)
         
         return paymentCapacity*sum(1/((1+interest_rate)**(np.array(days_each_month)/30)))
@@ -294,18 +273,14 @@ class CreditOperation():
     def reverse_return_iof_fee(self, amounts_installs, period, rPaymentDate, rDisbursementDate, iofadjust):
         
         days_each_month, installDates, _ = self.returnDaysEachMonth(period, rPaymentDate, rDisbursementDate)
-        
         if iofadjust == False:
             total_iof = []
-            
             for j,i in enumerate(amounts_installs['amortization_amount']):
                 days_iof = np.sum(days_each_month[:j+1])
                 total_iof.append(i*self.iof_interest_rate*days_iof)
-            
             iof_fee = sum(total_iof) + amounts_installs['amortization_amount'].sum()*self.iof_adicional
             iof_fee_2 = amounts_installs['amortization_amount'].sum()*self.iof_max_rate
             iof_fee_2 = iof_fee_2 + amounts_installs['amortization_amount'].sum()*self.iof_adicional
-
             if iof_fee_2 < iof_fee:
                 iof_fee = iof_fee_2
                 
@@ -366,28 +341,23 @@ class CreditOperation():
     def find_pre_approved_with_fees(self, paymentCapacity, interest_rate, period=12, iofadjust=False, rPaymentDate=datetime.datetime.today(), rDisbursementDate=datetime.datetime.today()):
         
         amount_wiof = self.reverse_calculate_amortization_amount(paymentCapacity, interest_rate, period, rPaymentDate, rDisbursementDate)
-        
         #doing it with maximum iof possible
         installments, _ = self.amortization_schedule(1, interest_rate, period, rPaymentDate, rDisbursementDate)
         installments = pd.DataFrame(installments)
-        
         iof_fee = self.reverse_return_iof_fee(installments, period, rPaymentDate, rDisbursementDate, iofadjust)
-        
         #doing it with maximum iof possible
         final_installments, _ = self.amortization_schedule(amount_wiof*(1-iof_fee), interest_rate, period, rPaymentDate, rDisbursementDate)
         final_installments = pd.DataFrame(final_installments)
-        
         final_iof = self.return_iof_fee( final_installments, period, rPaymentDate, rDisbursementDate, iofadjust)
-        
         #doing it with maximum iof possible
         final_installments, _ = self.amortization_schedule(np.round(amount_wiof-final_iof,4), interest_rate, period, rPaymentDate, rDisbursementDate)
         final_installments = pd.DataFrame(final_installments)
-        
         pre_appr_w_fees = self.reverse_calculate_amortization_amount(final_installments['amortization_amount'].values[0], interest_rate, period, rPaymentDate, rDisbursementDate)
         
         return pre_appr_w_fees
         
     def paymentCapacityPriceTable(self, request, gyraFeesPath='./install_csv/gyra_fees.csv'):
+        
         gyra_fees = pd.read_csv(gyraFeesPath)
         try:
             rPaymentDate = datetime.datetime.strptime(request.args.get('PaymentDate'), '%d-%m-%Y')
@@ -406,24 +376,20 @@ class CreditOperation():
                 gyra_fees.loc[:,'bankFee'] = bankFeeRate
             except:
                 pass
-            
             try:
                 risk_group = int(request.args.get('riskGroup'))
             except:
                 risk_group = 1
-            
             try:
                 interest_rate = round(float(request.args.get('interestRate'))/100,self.roundingPlaces)
                 interestGiven = True
             except:
                 interest_rate = None
                 interestGiven = False
-                
             try:
                 adjusted = eval(request.args.get('Adjusted'))
             except:
                 adjusted = False
-
             try:
                 # Arredondar o paymentCapacity
                 iofadjust = eval(request.args.get('AdjustedIof'))
@@ -433,7 +399,6 @@ class CreditOperation():
             if iofadjust:
                 self.roundingPlaces = 2
                 adjusted = True
-
             try:
                 # Arredondar o paymentCapacity
                 rounding = eval(request.args.get('Round'))
@@ -445,7 +410,6 @@ class CreditOperation():
 
             if risk_group not in list(gyra_fees['riskGroup'][(gyra_fees['type'].str.contains(partner))].unique()):
                 risk_group = gyra_fees['riskGroup'][(gyra_fees['type'].str.contains(partner))].min()
-
             pre_approved = { 'choices' : [] }
             #for period in gyra_fees['period'][(gyra_fees['riskGroup'] == risk_group)].unique(): #[6,9,12,18,24]:
             for period in [3,6,9,12,18,24]: #[6,9,12,18,24]:
@@ -453,7 +417,6 @@ class CreditOperation():
                 if interestGiven == False:
                     interest_rate = round(float(gyra_fees['interest'][(gyra_fees['period'] == period) & (gyra_fees['type'].str.contains(partner)) & (gyra_fees['riskGroup'] == risk_group)].max()),self.roundingPlaces)
                 preaprwfees = self.find_pre_approved_with_fees(paymentCapacity, interest_rate, period, iofadjust, rPaymentDate, rDisbursementDate)
-                
                 # Working with Fees
                 if fees == True:
                     detailed_fees = {}
@@ -521,51 +484,40 @@ class CreditOperation():
             rPaymentDate = datetime.datetime.strptime(request.args.get('PaymentDate'), '%d-%m-%Y')
             rDisbursementDate = datetime.datetime.strptime(request.args.get('DisbursementDate'), '%d-%m-%Y')
             preapr = float(request.args.get('preApproved'))
-            
             if preapr < 0:
                 preapr = 0 
-            
             interest_rate = round(float(request.args.get('interestRate'))/100,6)
             period = int(request.args.get('Period'))
-            
             try:
                 fees = eval(request.args.get('Fees'))
             except:
                 fees = True
-            
             try:
                 iof_fee = eval(request.args.get('Iof'))
             except:
                 iof_fee = True
-            
             try:
                 partner = request.args.get('Partner')
             except:
                 partner = 'GYRA'
-
             try:
                 adjusted = eval(request.args.get('Adjusted'))
             except:
                 adjusted = False
-
             try:
                 iofadjust = eval(request.args.get('AdjustedIof'))
             except:
                 iofadjust = False
-
             try:
                 bankFeeRate = float(request.args.get('BankFeeRate'))
                 gyra_fees.loc[:,'bankFee'] = bankFeeRate
             except:
                 pass
-
             if iofadjust:
                 self.roundingPlaces = 2
                 adjusted = True
-            
             if any(partner in sub for sub in list(gyra_fees['type'].unique())) == False:
                 partner = 'GYRA'
-            
             pre_approved = { 'choices' : [] }
             # Working with Fees
             if fees == True and partner != None:
@@ -581,15 +533,12 @@ class CreditOperation():
                 for key in detailed_fees.keys():
                     if key not in ['gyraMaisFee','bankFee']:
                         detailed_fees['gyraMaisFee'] = float(np.clip(detailed_fees['gyraMaisFee']-detailed_fees[key],0,10))
-                        
                 int_fees = 0.0
                 preaprwfees = preapr + 0.0
-                
                 for key in detailed_fees.keys():
                     int_fees = int_fees + detailed_fees[key]
                     detailed_fees[key] = detailed_fees[key]*preapr
                     preaprwfees = preaprwfees + float(detailed_fees[key])
-                    
                 #preapr = np.round(preapr/100,0)*100
                 table, cet, acet, iofval, installAmount = self.calculate_amortization_schedule_with_taxes(preaprwfees, preapr, interest_rate, period, iofadjust, iof_fee, adjusted, rPaymentDate, rDisbursementDate)
                 preaprwfees = preaprwfees + iofval
@@ -600,7 +549,6 @@ class CreditOperation():
                     installAmount=installAmount,totalFinalAmount=installAmount*period
                     )
                 )
-
             else:
                 #preapr = np.round(preapr/100,0)*100
                 print(preapr, interest_rate, period, iofadjust, iof_fee, adjusted, rPaymentDate, rDisbursementDate)
@@ -615,11 +563,9 @@ class CreditOperation():
                 )
             #Ending
             pre_approved['partner'] = partner
-
             return pre_approved
             
         except Exception as e:
-            
             print(e)
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
