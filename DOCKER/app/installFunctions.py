@@ -203,7 +203,6 @@ class CreditOperation():
         
         days_each_month, installDates, payDay = self.returnDaysEachMonth(period, rPaymentDate, rDisbursementDate)
         amortization_amount = self.calculate_amortization_amount(principal, interestRate, installDates, rDisbursementDate)
-        print(principal)
         number = 1
         balance = 1*principal
         balanceAdjusted = 1*principal
@@ -427,7 +426,7 @@ class CreditOperation():
             if ipca:
                 try:
                     client = generateClient()
-                    ipcaslist = list(client['gyramais']['IntegrationEconomics'].find({},{'ipcaAcc12M': 1, 'anomes': 1}).sort('anomes', -1)).limit
+                    ipcaslist = list(client['gyramais']['IntegrationEconomics'].find({},{'ipcaAcc12M': 1, 'anomes': 1}).sort('anomes', -1).limit(10))
                     interestIPCA = (1 + ipcaslist[2]['ipcaAcc12M'])**(1/12)-1 # conta inversa
                 except:
                     return { 'Error': 'Could not fetch IPCA values.'}
@@ -481,7 +480,6 @@ class CreditOperation():
                     for key in detailed_fees.keys():
                         detailed_fees[key] = detailed_fees[key]*preapr
                         feesValue = feesValue + detailed_fees[key]
-                    print(preapr + feesValue, preapr,  interestRate, period, iofadjust, iof_fee, adjusted, rPaymentDate, rDisbursementDate)
                     table, cet, acet, iofval, installAmount = self.calculate_amortization_schedule_with_taxes( preapr + feesValue, preapr,  interestRate, 
                                                                                                               period, iofadjust, iof_fee, 
                                                                                                               adjusted, rPaymentDate, rDisbursementDate)
@@ -509,7 +507,7 @@ class CreditOperation():
             pre_approved['partner'] = partner
             if ipca:
                 for doc in pre_approved['choices']:
-                    pre_approved['IPCA'] = ipcaslist[2]['ipcaAcc12M']
+                    doc['IPCA'] = ipcaslist[2]['ipcaAcc12M']
             return pre_approved
         
         except Exception as e:
@@ -562,9 +560,9 @@ class CreditOperation():
             if ipca:
                 try:
                     client = generateClient()
-                    ipcaslist = list(client['gyramais']['IntegrationEconomics'].find({},{'ipcaAcc12M': 1, 'anomes': 1}).sort('anomes', -1)).limit
+                    ipcaslist = list(client['gyramais']['IntegrationEconomics'].find({},{'ipcaAcc12M': 1, 'anomes': 1}).sort('anomes', -1).limit(10))
                     interestIPCA = (1 + ipcaslist[2]['ipcaAcc12M'])**(1/12)-1 # conta inversa
-                except:
+                except Exception as e:
                     return { 'Error': 'Could not fetch IPCA values.'}
                 interestRate= interestRate + interestIPCA
             if iofadjust:
@@ -621,7 +619,7 @@ class CreditOperation():
             pre_approved['partner'] = partner
             if ipca:
                 for doc in pre_approved['choices']:
-                    pre_approved['IPCA'] = ipcaslist[2]['ipcaAcc12M']
+                    doc['IPCA'] = ipcaslist[2]['ipcaAcc12M']
             return pre_approved
             
         except Exception as e:
