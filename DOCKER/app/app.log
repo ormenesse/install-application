@@ -1,0 +1,2 @@
+root - ERROR - <class 'UnboundLocalError'> installFunctions.py 619
+werkzeug - INFO - 127.0.0.1 - - [26/Jan/2024 11:14:16] "GET /installapp/priceTable/?preApproved=15150000&Period=144&interestRate=1.2&Fees=False&Iof=False&AdjustedIof=True&DisbursementDate=15-01-2024&PaymentDate=15-02-2024&Partner=GYRA&IPCA=True HTTP/1.1" 200 -
