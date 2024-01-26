@@ -37,7 +37,7 @@ def calculate_preapproved():
 
 @app.route('/installapp/priceTableTabular/', methods=['GET'])
 #/priceTable?preApproved=123123&Period=12&interestRate=3&Partner=GYRA&Fees=True&Iof=True
-def calculate_preapproved():
+def calculate_preapproved_tabular():
     
     gc.collect()
     co = CreditOperation()
