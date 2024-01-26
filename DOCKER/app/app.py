@@ -35,6 +35,37 @@ def calculate_preapproved():
     co = CreditOperation()
     return co.priceTable(request)
 
+@app.route('/installapp/priceTableTabular/', methods=['GET'])
+#/priceTable?preApproved=123123&Period=12&interestRate=3&Partner=GYRA&Fees=True&Iof=True
+def calculate_preapproved():
+    
+    gc.collect()
+    co = CreditOperation()
+    _json_ = co.priceTable(request)
+    defaultDict = {}
+    defaultDict['DisbursementDate'] = _json_['choices'][0]['DisbursementDate']
+    defaultDict['IPCA'] = _json_['choices'][0]['IPCA']
+    defaultDict['Iof'] = _json_['choices'][0]['Iof']
+    defaultDict['annualCet'] = _json_['choices'][0]['annualCet']
+    defaultDict['installAmount'] = _json_['choices'][0]['installAmount']
+    defaultDict['interestRate'] = _json_['choices'][0]['interestRate']
+    defaultDict['months'] = _json_['choices'][0]['months']
+    defaultDict['preApproved'] = _json_['choices'][0]['preApproved']
+    defaultDict['preApprovedWithFees'] = _json_['choices'][0]['preApprovedWithFees']
+    defaultDict['totalFinalAmount'] = _json_['choices'][0]['totalFinalAmount']
+    arr = []
+    for i in _json_['choices'][0]['amortizationTable']['amortization_amount'].keys():
+        _dic_ = copy.copy(defaultDict)
+        _dic_['amortization_amount'] = _json_['choices'][0]['amortizationTable']['amortization_amount'][i]
+        _dic_['balance'] = _json_['choices'][0]['amortizationTable']['balance'][i]
+        _dic_['installDates'] = _json_['choices'][0]['amortizationTable']['installDates'][i]
+        _dic_['interest'] = _json_['choices'][0]['amortizationTable']['interest'][i]
+        _dic_['number'] = _json_['choices'][0]['amortizationTable']['number'][i]
+        _dic_['payDayDates'] = _json_['choices'][0]['amortizationTable']['payDayDates'][i]
+        _dic_['principal'] = _json_['choices'][0]['amortizationTable']['principal'][i]
+        arr.append(_dic_)
+    return arr
+
 @app.route('/installapp/interestAmount/', methods=['GET'])
 #/interestAmount?Principal=16800&Period=24&DisbursementDate=29-10-2020&PaymentDate=20-12-2020&Amortization=1350.50
 def calculate_interestrate():
