@@ -40,33 +40,33 @@ spec:
     kind: Deployment
     name: install-app
   minReplicas: 1
-  maxReplicas: 5
+  maxReplicas: 3
   behavior:
     scaleUp:
-      stabilizationWindowSeconds: 30
+      stabilizationWindowSeconds: 60
       policies:
       - type: Pods
         value: 1
-        periodSeconds: 15
+        periodSeconds: 30
     scaleDown:
-      stabilizationWindowSeconds: 30
+      stabilizationWindowSeconds: 60
       policies:
       - type: Pods
         value: 1
-        periodSeconds: 15
+        periodSeconds: 30
   metrics:
   - type: Resource
     resource:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 80
+        averageUtilization: 95
   - type: Resource
     resource:
       name: memory
       target:
         type: Utilization
-        averageUtilization: 80
+        averageUtilization: 95
 ---
 apiVersion: v1
 kind: Service
