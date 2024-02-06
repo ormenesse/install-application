@@ -564,7 +564,6 @@ class CreditOperation():
                     interestIPCA = (1 + ipcaslist[2]['ipcaAcc12M'] + interestRate)**(1/12)-1 # conta inversa
                     interestRate = round(interestIPCA,4)
                 except Exception as e:
-                    print(e)
                     return { 'Error': 'Could not fetch IPCA values.'}
             if iofadjust:
                 self.roundingPlaces = 2
