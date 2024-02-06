@@ -427,10 +427,10 @@ class CreditOperation():
                 try:
                     client = generateClient()
                     ipcaslist = list(client['gyramais']['IntegrationEconomics'].find({},{'ipcaAcc12M': 1, 'anomes': 1}).sort('anomes', -1).limit(10))
-                    interestIPCA = (1 + ipcaslist[2]['ipcaAcc12M'])**(1/12)-1 # conta inversa
-                except:
+                    interestIPCA = (1 + ipcaslist[2]['ipcaAcc12M'] + interestRate)**(1/12)-1 # conta inversa
+                    interestRate = round(interestIPCA,4)
+                except Exception as e:
                     return { 'Error': 'Could not fetch IPCA values.'}
-                interestRate= interestRate + interestIPCA
             if any(partner in sub for sub in list(gyra_fees['type'].unique())) == False:
                 partner = 'GYRA'
             if risk_group not in list(gyra_fees['riskGroup'][(gyra_fees['type'].str.contains(partner))].unique()):
@@ -526,7 +526,7 @@ class CreditOperation():
             preapr = float(request.args.get('preApproved'))
             if preapr < 0:
                 preapr = 0 
-            interestRate= round(float(request.args.get('interestRate'))/100,6)
+            interestRate = round(float(request.args.get('interestRate'))/100,self.roundingPlaces)
             period = int(request.args.get('Period'))
             try:
                 fees = eval(request.args.get('Fees'))
@@ -561,10 +561,11 @@ class CreditOperation():
                 try:
                     client = generateClient()
                     ipcaslist = list(client['gyramais']['IntegrationEconomics'].find({},{'ipcaAcc12M': 1, 'anomes': 1}).sort('anomes', -1).limit(10))
-                    interestIPCA = (1 + ipcaslist[2]['ipcaAcc12M'])**(1/12)-1 # conta inversa
+                    interestIPCA = (1 + ipcaslist[2]['ipcaAcc12M'] + interestRate)**(1/12)-1 # conta inversa
+                    interestRate = round(interestIPCA,4)
                 except Exception as e:
+                    print(e)
                     return { 'Error': 'Could not fetch IPCA values.'}
-                interestRate= interestRate + interestIPCA
             if iofadjust:
                 self.roundingPlaces = 2
                 adjusted = True

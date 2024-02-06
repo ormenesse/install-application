@@ -44,7 +44,10 @@ def calculate_preapproved_tabular():
     _json_ = co.priceTable(request)
     defaultDict = {}
     defaultDict['DisbursementDate'] = _json_['choices'][0]['DisbursementDate']
-    defaultDict['IPCA'] = _json_['choices'][0]['IPCA']
+    try:
+        defaultDict['IPCA'] = _json_['choices'][0]['IPCA']
+    except:
+        pass 
     defaultDict['Iof'] = _json_['choices'][0]['Iof']
     defaultDict['annualCet'] = _json_['choices'][0]['annualCet']
     defaultDict['installAmount'] = _json_['choices'][0]['installAmount']
