@@ -251,7 +251,7 @@ class CreditOperation():
             total_iof = []
             for j,i in enumerate(amounts_installs['amortization_amount']):
                 days_iof = np.sum(days_each_month[:j+1])
-                total_iof.append(i*self.iof_interest_rate*days_iof)
+                total_iof.append(i*self.iofInterestRate*days_iof)
             # sempre perguntar se essa regra ainda existe
             iof_fee = sum(total_iof)+ amounts_installs['amortization_amount'].sum()*self.iofAdicional
             iof_fee_2 = amounts_installs['amortization_amount'].sum()*self.iofMaxRate
@@ -264,9 +264,9 @@ class CreditOperation():
             iofs = []
             for i in range(len(days_each_month)):
                 if sum(days_each_month[:i+1]) < 365:
-                    iofs.append(accInterest[i]*self.iof_interest_rate*sum(days_each_month[:i+1])+accInterest[i]*self.iofAdicional)
+                    iofs.append(accInterest[i]*self.iofInterestRate*sum(days_each_month[:i+1])+accInterest[i]*self.iofAdicional)
                 else:
-                    iofs.append(accInterest[i]*self.iof_interest_rate*365+accInterest[i]*self.iofAdicional)
+                    iofs.append(accInterest[i]*self.iofInterestRate*365+accInterest[i]*self.iofAdicional)
             
             return round(np.sum(iofs),self.roundingPlaces)
 
@@ -287,7 +287,7 @@ class CreditOperation():
             total_iof = []
             for j,i in enumerate(amounts_installs['amortization_amount']):
                 days_iof = np.sum(days_each_month[:j+1])
-                total_iof.append(i*self.iof_interest_rate*days_iof)
+                total_iof.append(i*self.iofInterestRate*days_iof)
             iof_fee = sum(total_iof) + amounts_installs['amortization_amount'].sum()*self.iofAdicional
             iof_fee_2 = amounts_installs['amortization_amount'].sum()*self.iofMaxRate
             iof_fee_2 = iof_fee_2 + amounts_installs['amortization_amount'].sum()*self.iofAdicional
@@ -301,9 +301,9 @@ class CreditOperation():
             iofs = []
             for i in range(len(days_each_month)):
                 if sum(days_each_month[:i+1]) < 365:
-                    iofs.append(accInterest[i]*self.iof_interest_rate*sum(days_each_month[:i+1])+accInterest[i]*self.iofAdicional)
+                    iofs.append(accInterest[i]*self.iofInterestRate*sum(days_each_month[:i+1])+accInterest[i]*self.iofAdicional)
                 else:
-                    iofs.append(accInterest[i]*self.iof_interest_rate*365+accInterest[i]*self.iofAdicional)
+                    iofs.append(accInterest[i]*self.iofInterestRate*365+accInterest[i]*self.iofAdicional)
             
             return round(np.sum(iofs),self.roundingPlaces)
         
@@ -447,8 +447,10 @@ class CreditOperation():
                                 (gyra_fees['type'].str.contains(partner)) & 
                                 (gyra_fees['riskGroup'] == risk_group)
                             ].max()),self.roundingPlaces)
+                    
                 preaprwfees = self.find_pre_approved_with_fees(paymentCapacity, interestRate, period, 
                                                                iofadjust, rPaymentDate, rDisbursementDate)
+
                 # Working with Fees
                 if fees == True:
                     detailed_fees = {}
