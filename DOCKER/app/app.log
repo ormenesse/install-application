@@ -1,2 +1,3 @@
-root - ERROR - <class 'UnboundLocalError'> installFunctions.py 472
-werkzeug - INFO - 127.0.0.1 - - [21/Feb/2024 15:52:39] "GET /installapp/paymentCapacityPriceTable/?Partner=GYRA&Fees=True&Iof=True&PaymentDate=29-11-2021&DisbursementDate=29-10-2021&Adjusted=True&riskGroup=4&paymentCapacity=2599.126607327375&AdjustedIof=True HTTP/1.1" 200 -
+root - ERROR - <class 'ZeroDivisionError'> installFunctions.py 481
+werkzeug - INFO - 127.0.0.1 - - [23/Feb/2024 09:45:44] "GET /installapp/paymentCapacityPriceTable/?Partner=GYRA&Fees=True&Iof=True&PaymentDate=22-02-2024&DisbursementDate=22-02-2025&Adjusted=True&riskGroup=2&paymentCapacity=3707.831364560734&AdjustedIof=True HTTP/1.1" 200 -
+werkzeug - INFO - 127.0.0.1 - - [23/Feb/2024 09:46:20] "GET /installapp/paymentCapacityPriceTable/?Partner=GYRA&Fees=True&Iof=True&PaymentDate=22-03-2024&DisbursementDate=22-02-2024&Adjusted=True&riskGroup=2&paymentCapacity=3707.831364560734&AdjustedIof=True HTTP/1.1" 200 -

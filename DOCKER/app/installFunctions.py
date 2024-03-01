@@ -419,15 +419,11 @@ class CreditOperation():
             if iofadjust:
                 self.roundingPlaces = 2
                 adjusted = True
-            try:
-                ipca = eval(request.args.get('IPCA'))
-            except:
-                ipca = False
             if ipca:
                 try:
                     client = generateClient()
-                    ipcaslist = list(client['gyramais']['IntegrationEconomics'].find({},{'ipcaAcc12M': 1, 'anomes': 1}).sort('anomes', -1).limit(10))
-                    interestIPCA = (1 + ipcaslist[2]['ipcaAcc12M'] + interestRate)**(1/12)-1 # conta inversa
+                    ipcaslist = list(client['gyramais']['IntegrationEconomics'].find({},{'ipcaAcc12MCRI': 1, 'anomes': 1}).sort('anomes', -1).limit(10))
+                    interestIPCA = (1 + ipcaslist[2]['ipcaAcc12MCRI'] + interestRate)**(1/12)-1 # conta inversa
                     interestRate = round(interestIPCA,4)
                 except Exception as e:
                     return { 'Error': 'Could not fetch IPCA values.'}
@@ -509,7 +505,7 @@ class CreditOperation():
             pre_approved['partner'] = partner
             if ipca:
                 for doc in pre_approved['choices']:
-                    doc['IPCA'] = ipcaslist[2]['ipcaAcc12M']
+                    doc['IPCA'] = ipcaslist[2]['ipcaAcc12MCRI']
             return pre_approved
         
         except Exception as e:
@@ -562,8 +558,8 @@ class CreditOperation():
             if ipca:
                 try:
                     client = generateClient()
-                    ipcaslist = list(client['gyramais']['IntegrationEconomics'].find({},{'ipcaAcc12M': 1, 'anomes': 1}).sort('anomes', -1).limit(10))
-                    interestIPCA = (1 + ipcaslist[2]['ipcaAcc12M'] + interestRate)**(1/12)-1 # conta inversa
+                    ipcaslist = list(client['gyramais']['IntegrationEconomics'].find({},{'ipcaAcc12MCRI': 1, 'anomes': 1}).sort('anomes', -1).limit(10))
+                    interestIPCA = (1 + ipcaslist[2]['ipcaAcc12MCRI'] + interestRate)**(1/12)-1 # conta inversa
                     interestRate = round(interestIPCA,4)
                 except Exception as e:
                     return { 'Error': 'Could not fetch IPCA values.'}
@@ -621,7 +617,7 @@ class CreditOperation():
             pre_approved['partner'] = partner
             if ipca:
                 for doc in pre_approved['choices']:
-                    doc['IPCA'] = ipcaslist[2]['ipcaAcc12M']
+                    doc['IPCA'] = ipcaslist[2]['ipcaAcc12MCRI']
             return pre_approved
             
         except Exception as e:
