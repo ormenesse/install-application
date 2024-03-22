@@ -2,9 +2,9 @@ name: Sandbox
 
 on:
   push:
-    branches: [ "sandbox" ]
+    branches: [ "master" ] # change this plx
   pull_request:
-    branches: [ "sandbox" ]
+    branches: [ "master" ]
 
 env: 
   AWS_REGION: us-west-2
