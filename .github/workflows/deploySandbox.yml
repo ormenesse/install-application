@@ -20,7 +20,8 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/sandbox'
+    # change this
+    if: github.ref == 'refs/heads/master' 
 
     steps:
     - name: Clone
