@@ -13,8 +13,8 @@ spec:
       labels:
         app: install-app
     spec:
-      containers:
       restartPolicy: Always
+      containers:
       - image: 941961614774.dkr.ecr.us-west-2.amazonaws.com/install-app:latest
         imagePullPolicy: Always
         name: install-app
