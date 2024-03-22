@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       restartPolicy: Always
-      - image: {containerPath}/install-app:latest
+      - image: 941961614774.dkr.ecr.us-west-2.amazonaws.com/install-app:latest
         imagePullPolicy: Always
         name: install-app
         resources:
