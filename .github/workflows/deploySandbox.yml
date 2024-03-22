@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "master" ] # change this plx
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master" ] # change this plx
 
 env: 
   AWS_REGION: us-west-2
