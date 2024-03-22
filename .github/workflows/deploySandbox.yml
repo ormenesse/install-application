@@ -1,0 +1,93 @@
+name: Sandbox
+
+on:
+  push:
+    branches: [ "sandbox" ]
+  pull_request:
+    branches: [ "sandbox" ]
+
+env: 
+  AWS_REGION: us-west-2
+  ECR_REPOSITORY: install-app
+  SHORT_SHA: $(echo ${{ github.sha }} | cut -c 1-8)
+  NAMESPACE: data-science
+  DEPLOY_ENV: 'sandbox'
+  AWS_SECRET_NAME: 'ds-secrets'
+  K8S_SECRET: 'ds-secrets'
+  DEPLOYMENT: 'install-app'
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/sandbox'
+
+    steps:
+    - name: Clone
+      uses: actions/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.ACTION_AWS_ACCESS_KEY_SANDBOX }}
+        aws-secret-access-key: ${{ secrets.ACTION_AWS_SECRET_KEY_SANDBOX }}
+        aws-region: us-west-2
+      
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      run: |
+        cd DOCKER
+        docker image build --no-cache=true -f Dockerfile \
+        --tag 941961614774.dkr.ecr.us-west-2.amazonaws.com/${{ env.ECR_REPOSITORY }}:latest \
+        --tag 941961614774.dkr.ecr.us-west-2.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.SHORT_SHA }} \
+        .
+        docker push 941961614774.dkr.ecr.us-west-2.amazonaws.com/${{ env.ECR_REPOSITORY }}:latest
+        docker push 941961614774.dkr.ecr.us-west-2.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.SHORT_SHA }}
+
+    - name: Install and configure kubectl
+      run: |
+        VERSION=$(curl --silent https://storage.googleapis.com/kubernetes-release/release/stable.txt)
+        # https://github.com/aws/aws-cli/issues/6920#issuecomment-1117981158
+        VERSION=v1.23.6
+        curl https://storage.googleapis.com/kubernetes-release/release/$VERSION/bin/linux/amd64/kubectl \
+          --progress-bar \
+          --location \
+          --remote-name
+        chmod +x kubectl
+        sudo mv kubectl /usr/local/bin/
+
+    - name: Deploy
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      run: |
+        export ECR_REPOSITORY=941961614774.dkr.ecr.us-west-2.amazonaws.com/${{ env.ECR_REPOSITORY }}
+        export IMAGE_TAG=${{ env.SHORT_SHA }}
+        cd k8s/$DEPLOY_ENV
+        echo ${{ secrets.KUBECONFIG_SANDBOX }} | base64 --decode > kubeconfig.yml
+        ls -lha
+        export KUBECONFIG=kubeconfig.yml
+        kubectl get namespace | grep -q "^$NAMESPACE " || kubectl create namespace $NAMESPACE
+        kubectl get pods
+        #aws secretsmanager get-secret-value --secret-id $AWS_SECRET_NAME --query SecretString --output text | jq -r 'to_entries|map("\(.key)=\(.value)")|.[]' > secrets.env
+        #kubectl create secret generic $K8S_SECRET --dry-run=client --from-env-file="secrets.env" -n $NAMESPACE -o yaml | kubectl apply -f -
+        manifests=$(ls | grep .yaml)
+        for file in $manifests; do
+          echo "Deploying $file manifest"
+          search3="- image: {containerPath}"
+          replace3="- image: 941961614774.dkr.ecr.us-west-2.amazonaws.com"
+          sed -i "s/$search3/$replace3/" $file
+          output=$(kubectl apply -f $file -n $NAMESPACE)
+          echo $output
+          if [ -n "$( echo $file | grep deployment)" -a -n "$( echo $output | grep unchanged)" ];
+          then
+            echo "Deploy to file $file not changed, restarting pods..."
+          fi
+        done;
+        echo "Restarting pods..."
+        kubectl rollout restart deployment/$DEPLOYMENT -n $NAMESPACE

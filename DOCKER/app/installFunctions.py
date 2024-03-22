@@ -389,6 +389,17 @@ class CreditOperation():
             fees = eval(request.args.get('Fees'))
             iof_fee = eval(request.args.get('Iof'))
             try:
+                if eval(request.args.get('PF')):
+                    self.iof_interest_rate = 0.000082
+                    self.iof_max_rate = 0.03
+                    self.iof_adicional = 0.0038
+                elif eval(request.args.get('PJ')):
+                    self.iofInterestRate= 0.000041
+                    self.iofMaxRate = 0.015
+                    self.iofAdicional = 0.0038
+            except:
+                pass # do nothing
+            try:
                 bankFeeRate = float(request.args.get('BankFeeRate'))
                 gyra_fees.loc[:,'bankFee'] = bankFeeRate
             except:
@@ -526,6 +537,17 @@ class CreditOperation():
                 preapr = 0 
             interestRate = round(float(request.args.get('interestRate'))/100,self.roundingPlaces)
             period = int(request.args.get('Period'))
+            try:
+                if eval(request.args.get('PF')):
+                    self.iof_interest_rate = 0.000082
+                    self.iof_max_rate = 0.03
+                    self.iof_adicional = 0.0038
+                elif eval(request.args.get('PJ')):
+                    self.iofInterestRate= 0.000041
+                    self.iofMaxRate = 0.015
+                    self.iofAdicional = 0.0038
+            except:
+                pass # do nothing
             try:
                 fees = eval(request.args.get('Fees'))
             except:
